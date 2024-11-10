@@ -1,0 +1,3 @@
+include:
+  - /deploy/pipeline/apps/build.yml
+  - /deploy/pipeline/apps/deploy.yml

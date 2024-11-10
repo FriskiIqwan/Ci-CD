@@ -1,0 +1,6 @@
+include:
+  - /deploy/pipeline/dependencies/base.yml
+  - /deploy/pipeline/dependencies/images.yml
+  - /deploy/pipeline/dependencies/rules.yml
+  - /deploy/pipeline/dependencies/services.yml
+

@@ -1,0 +1,9 @@
+stages:
+  - test
+  - build
+  - deploy
+
+include:
+  - /deploy/pipeline/dependencies/main.yml
+  - /deploy/pipeline/test/main.yml
+  - /deploy/pipeline/apps/main.yml

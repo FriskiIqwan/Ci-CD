@@ -1,0 +1,15 @@
+.node_base:
+  extends:
+    - .node_image
+  before_script:
+    # update to the latest version of pnpm
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install
+  cache:
+    key:
+      files:
+        - pnpm-lock.yaml
+    paths:
+      - .pnpm-store

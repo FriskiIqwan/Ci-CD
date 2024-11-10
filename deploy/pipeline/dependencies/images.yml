@@ -1,0 +1,27 @@
+.tf_image:
+  image:
+    name: hashicorp/terraform:1.3.8
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+.node_image:
+  image:
+    name: node:20-alpine3.19
+
+.ubuntu_image:
+  image:
+    name: buildpack-deps:20.04-curl
+
+.dind_image:
+  image:
+    name: docker:25.0.4
+  tags:
+    - docker-in-docker
+  services:
+    - docker:25.0.4-dind
+
+.kaniko_image:
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]

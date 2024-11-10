@@ -1,0 +1,22 @@
+.common-ifs:
+  on-merge-requests: &on-mr
+    if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  is-schedule: &on-schedule
+    if: $CI_PIPELINE_SOURCE == 'schedule'
+  on-main: &on-main
+    if: $CI_COMMIT_BRANCH == "main"
+
+.common-rules:
+  never: &never
+    when: never
+  no-schedule:
+    - <<: *on-schedule
+      <<: *never
+  on-manual: &on-manual
+    when: manual
+
+.next-rules:
+  on-apps-dev:
+    - <<: *on-schedule
+      <<: *never
+    - <<: *on-mr

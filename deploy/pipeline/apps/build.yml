@@ -1,0 +1,20 @@
+.build:apps:
+  stage: build
+  interruptible: true
+  extends:
+    - .kaniko_image
+  script:
+    - docker login u friski12 --password-stdin $DOCKER_HUB_TOKEN
+    # - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $ECR_HOST/gcbc:$TAGGING --single-snapshot=true --snapshot-mode=redo
+
+build:apps:dev:
+  extends:
+    - .build:apps
+  rules:
+    - !reference [.next-rules, on-apps-dev]
+  variables:
+    TAGGING: $CI_COMMIT_SHORT_SHA
+  environment:
+    name: 'dev'
+    action: 'prepare'
+

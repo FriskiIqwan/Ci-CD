@@ -1,0 +1,75 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+
+services:
+  traefik:
+    image: "traefik:v2.11"
+    command:
+      - --log.level=INFO
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.metrics.address=:9101
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.swarmmode=true
+      - --providers.docker.network=swarm_network
+      - --api
+      - --api.dashboard=true
+      - --certificatesresolvers.leresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      # update your email here
+      - --certificatesresolvers.leresolver.acme.email=friskiiqwanwahyudi@gmail.com
+      # Make sure the this file is available and permission is set correctly
+      - --certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.leresolver.acme.tlschallenge=true
+      - --metrics.prometheus=true
+      - --metrics.prometheus.entrypoint=metrics
+    ports:
+      - "80:80"
+      - "443:443"
+      - "9101:9101"
+    networks:
+      - swarm_network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # Make sure the volume folder is created
+      - letsencrypt:/letsencrypt
+    logging: *default-logging
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role==manager
+      labels:
+        # Dashboard
+        - "traefik.enable=true"
+        # Change the host url here
+        - "traefik.http.routers.traefik.rule=Host(`traefik-gcbc.zero-one.cloud`)"
+        - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "traefik.http.routers.traefik.tls.certresolver=leresolver"
+        - "traefik.http.routers.traefik.entrypoints=websecure"
+        - "traefik.http.routers.traefik.middlewares=authtraefik"
+        # Change the auth password here
+        - "traefik.http.middlewares.authtraefik.basicauth.users=admin:$$2y$$05$$2q9VkHYu6uoiYnCPVp6ojOvZKBViwgw.Z/eL3lDOfQryMAkv24L1y" # user/password
+
+        # global redirect to https
+        - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+        - "traefik.http.routers.http-catchall.entrypoints=web"
+        - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+
+        # middleware redirect
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+networks:
+  swarm_network:
+    name: swarm_network
+    driver: overlay
+    attachable: true
+
+volumes:
+  letsencrypt:
+    name: letsencrypt

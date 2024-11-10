@@ -1,0 +1,13 @@
+test:main:
+  stage: test
+  interruptible: true
+  extends:
+    - .node_base
+  script:
+    - pnpm lint
+    - pnpm check
+    - pnpm format
+  rules:
+    - !reference [.common-ifs, on-merge-requests]
+    - !reference [.common-rules, no-schedule]
+
