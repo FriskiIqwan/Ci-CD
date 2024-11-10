@@ -16,8 +16,6 @@
 .dind_image:
   image:
     name: docker:25.0.4
-  tags:
-    - docker-in-docker
   services:
     - docker:25.0.4-dind
 
