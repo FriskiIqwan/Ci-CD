@@ -4,7 +4,6 @@ test:main:
   extends:
     - .node_base
   script:
-    - ls
     - pnpm lint
     - pnpm check
     - pnpm format
