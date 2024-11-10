@@ -19,4 +19,4 @@
   on-apps-dev:
     - <<: *on-schedule
       <<: *never
-    - <<: *on-mr
+    - <<: *on-main
