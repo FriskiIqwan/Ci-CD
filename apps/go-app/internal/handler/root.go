@@ -14,7 +14,7 @@ func RootHandler(c echo.Context) error {
 		BaseAPIResponse: model.BaseAPIResponse{
 			Status:  http.StatusOK,
 			Success: true,
-			Message: "Hello World",
+			Message: "Dedek Mantap Jiwa",
 		},
 		Data: map[string]string{},
 	}
