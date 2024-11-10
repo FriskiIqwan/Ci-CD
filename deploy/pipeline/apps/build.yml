@@ -5,7 +5,7 @@
     - .dind_image
   script:
     - docker login -u friski12 -p $DOCKER_HUB_PASS
-    - docker build -t friski12/go-helloworld:latest -f $CI_PROJECT_DIR/apps/go-app/Dockerfile ./$CI_PROJECT_DIR/apps/go-app
+    - docker build -t friski12/go-helloworld:latest -f $CI_PROJECT_DIR/apps/go-app/Dockerfile /$CI_PROJECT_DIR/apps/go-app
 
 build:apps:dev:
   extends:
