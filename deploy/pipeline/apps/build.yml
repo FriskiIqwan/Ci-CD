@@ -6,7 +6,7 @@
   script:
     - echo $CI_PROJECT_DIR
     - docker login -u friski12 -p $DOCKER_HUB_PASS
-    - docker build -t friski12/go-helloworld:latest -f $CI_PROJECT_DIR/apps/go-app/Dockerfile
+    - docker build -t friski12/go-helloworld:latest -f $CI_PROJECT_DIR/apps/go-app/Dockerfile .
 
 build:apps:dev:
   extends:
