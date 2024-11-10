@@ -4,7 +4,7 @@
   extends:
     - .kaniko_image
   script:
-    - /busybox/mkdir -p /.docker
+    - /busybox/mkdir -p /root/.docker
     - /busybox/echo $DOCKER_JSON | base64 -d > /root/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR/apps/go-app --dockerfile $CI_PROJECT_DIR/apps/go-app/Dockerfile --destination friski12/go-helloworld:$TAGGING --single-snapshot=true --snapshot-mode=redo
 
