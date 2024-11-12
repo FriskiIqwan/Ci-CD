@@ -1,15 +1,32 @@
 notify_discord:
   stage: notify
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl jq
   script:
     - |
       STATUS="❌ Failed"
       COLOR=15158332
+
+      # Fetch failed jobs from the pipeline using the GitLab API
+      FAILED_JOBS=$(curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs" \
+        | jq -r '.[] | select(.status=="failed") | "- **Job:** " + .name + " **Stage:** " + .stage')
+
+      # Check if FAILED_JOBS is empty
+      if [ -z "$FAILED_JOBS" ]; then
+        FAILED_JOBS="Failed job details could not be retrieved."
+      fi
+
+      DESCRIPTION="Pipeline **#$CI_PIPELINE_ID** for project **$CI_PROJECT_NAME** has $STATUS!\n\n**Failed Jobs:**\n$FAILED_JOBS"
+
+      # Send the notification to Discord
       curl -H "Content-Type: application/json" \
            -X POST \
            -d '{
                  "embeds": [{
                    "title": "Pipeline '"$STATUS"'",
-                   "description": "Pipeline **#'"$CI_PIPELINE_ID"'** for project **'"$CI_PROJECT_NAME"'** has '"$STATUS"'!",
+                   "description": "'"$DESCRIPTION"'",
                    "url": "'"$CI_PIPELINE_URL"'",
                    "color": '"$COLOR"'
                  }]
