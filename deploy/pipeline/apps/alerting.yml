@@ -32,5 +32,6 @@ notify_discord:
                  }]
                }' \
            $DISCORD_WEBHOOK_URL
-  when: on_failure
+  rules:
+    - !reference [.common-rules, on-failure]
   allow_failure: true
