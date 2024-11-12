@@ -47,7 +47,7 @@ services:
         # Dashboard
         - "traefik.enable=true"
         # Change the host url here
-        - "traefik.http.routers.traefik.rule=Host(`traefik-gcbc.zero-one.cloud`)"
+        - "traefik.http.routers.traefik.rule=Host(`traefik.hariangsaka.my.id`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
         - "traefik.http.routers.traefik.tls.certresolver=leresolver"
