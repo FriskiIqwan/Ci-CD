@@ -6,7 +6,7 @@
   script:
     - docker login -u friski12 -p $DOCKER_HUB_PASS
     - docker build -t friski12/go-helloworld:$TAGGING -f $CI_PROJECT_DIR/apps/go-app/Dockerfile /$CI_PROJECT_DIR/apps/go-app
-    - docker push friski12/go-helloworld:latest
+    - docker push friski12/go-helloworld:$TAGGING
 
 build:apps:dev:
   extends:
