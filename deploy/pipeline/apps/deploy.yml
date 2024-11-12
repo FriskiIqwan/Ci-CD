@@ -10,7 +10,7 @@
     - DEBIAN_FRONTEND=noninteractive apt-fast install -y sshpass ca-certificates rsync wget openssh-client gettext-base
   script:
     - touch ./deploy/swarm/.env && cp $ENV ./deploy/swarm/.env
-    - echo "export CI_COMMIT_REF_NAME=\"$VERSION\"; export ENVIRONMENT=\"$ENVIRONMENT\"; export DOCKER_HUB_PASS=\"$DOCKER_HUB_PASS\"" > ./deploy/swarm/variable.txt
+    - echo "export ENVIRONMENT=\"$ENVIRONMENT\"; export DOCKER_HUB_PASS=\"$DOCKER_HUB_PASS\"" > ./deploy/swarm/variable.txt
     - source ./deploy/swarm/variable.txt
     - envsubst < ./deploy/swarm/docker-swarm-go-helloworld-updated.yml > ./deploy/swarm/docker-swarm-go-helloworld.yml
     - sshpass -p "$SSH_PASSWORD" rsync -avz -e 'ssh -o StrictHostKeyChecking=no' ./deploy/swarm/ "$USERNAME@$SERVER_ADDRESS:./golang"
