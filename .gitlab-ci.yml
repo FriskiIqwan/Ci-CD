@@ -2,6 +2,7 @@ stages:
   - test
   - build
   - deploy
+  - notify
 
 include:
   - /deploy/pipeline/dependencies/main.yml

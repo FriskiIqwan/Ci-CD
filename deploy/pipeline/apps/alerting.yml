@@ -1,0 +1,19 @@
+notify_discord:
+  stage: notify
+  script:
+    - |
+      STATUS="❌ Failed"
+      COLOR=15158332
+      curl -H "Content-Type: application/json" \
+           -X POST \
+           -d '{
+                 "embeds": [{
+                   "title": "Pipeline '"$STATUS"'",
+                   "description": "Pipeline **#'"$CI_PIPELINE_ID"'** for project **'"$CI_PROJECT_NAME"'** has '"$STATUS"'!",
+                   "url": "'"$CI_PIPELINE_URL"'",
+                   "color": '"$COLOR"'
+                 }]
+               }' \
+           $DISCORD_WEBHOOK_URL
+  when: on_failure
+  allow_failure: true
