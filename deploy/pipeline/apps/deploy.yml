@@ -7,16 +7,14 @@
     - sed -i "s/archive.ubuntu.com/us.archive.ubuntu.com/" /etc/apt/sources.list
     - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
     - apt-fast update -qy
-    - DEBIAN_FRONTEND=noninteractive apt-fast install -y ca-certificates rsync wget openssh-client gettext-base
+    - DEBIAN_FRONTEND=noninteractive apt-fast install -y sshpass ca-certificates rsync wget openssh-client gettext-base
   script:
     - touch ./deploy/swarm/.env && cp $ENV ./deploy/swarm/.env
-    - echo "export CI_COMMIT_REF_NAME=\"$VERSION\"; export ENVIRONMENT=\"$ENVIRONMENT\"" > ./deploy/swarm/variable.txt
+    - echo "export CI_COMMIT_REF_NAME=\"$VERSION\"; export ENVIRONMENT=\"$ENVIRONMENT\"; export DOCKER_HUB_PASS=\"$DOCKER_HUB_PASS\"" > ./deploy/swarm/variable.txt
     - source ./deploy/swarm/variable.txt
-    - echo "$SSH_PRIVATE_KEY" > private_key.pem
-    - chmod 600 private_key.pem
-    - envsubst < ./deploy/swarm/docker-swarm-apps-demo-updated.yml > ./deploy/swarm/docker-swarm-demo.yml
-    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem' ./deploy/swarm/ $USERNAME@$SERVER_ADDRESS:./gcbc
-    - ssh -o StrictHostKeyChecking=no -i private_key.pem $USERNAME@$SERVER_ADDRESS "source ~/gcbc/variable.txt && cd ~/gcbc && aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 555730086661.dkr.ecr.ap-southeast-1.amazonaws.com && if [ "$ENVIRONMENT" = "demo" ]; then echo "Inside demo block" && docker stack deploy -c docker-swarm-lb.yml gcbc && docker stack deploy -c docker-swarm-demo.yml gcbc --with-registry-auth; fi && if [ "$ENVIRONMENT" = "preproduction" ]; then echo "Inside preproduction block" && docker stack deploy -c docker-swarm-lb.yml gcbc && docker stack deploy -c docker-swarm-preproduction.yml gcbc --with-registry-auth; fi && if [ "$ENVIRONMENT" = "production" ]; then echo "Inside prod block" && docker stack deploy -c docker-swarm-lb-prod.yml gcbc && docker stack deploy -c docker-swarm-prod.yml gcbc --with-registry-auth; fi && if [ "$ENVIRONMENT" = "staging" ]; then echo "Inside staging block" && docker stack deploy -c docker-swarm-lb.yml gcbc && docker stack deploy -c docker-swarm.yml gcbc --with-registry-auth; fi"
+    - envsubst < ./deploy/swarm/docker-swarm-go-helloworld-updated.yml > ./deploy/swarm/docker-swarm-go-helloworld.yml
+    - sshpass -p "$SSH_PASSWORD" rsync -avz -e 'ssh -o StrictHostKeyChecking=no' ./deploy/swarm/ "$USERNAME@$SERVER_ADDRESS:./golang"
+    # - ssh -o StrictHostKeyChecking=no -i private_key.pem $USERNAME@$SERVER_ADDRESS "source ~/golang/variable.txt && cd ~/golang && docker login --username friski12 --password-stdin && if [ "$ENVIRONMENT" = "dev" ]; then echo "Inside staging block" && docker stack deploy -c docker-swarm-lb.yml go && docker stack deploy -c docker-swarm-go-helloworld.yml go --with-registry-auth; fi"
 
 deploy:apps:dev:
   extends:
@@ -26,8 +24,8 @@ deploy:apps:dev:
   variables:
     VERSION: $CI_COMMIT_SHORT_SHA
     SERVER_ADDRESS: $SERVER
-    ENVIRONMENT: staging
+    ENVIRONMENT: dev
   environment:
-    name: 'staging'
+    name: 'dev'
     action: 'prepare'
 

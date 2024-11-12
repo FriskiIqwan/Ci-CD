@@ -1,0 +1,24 @@
+services:
+  apps:
+    image: friski12/go-helloworld:$VERSION
+    ports:
+      - '8080:8080'
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - 'traefik.enable=true'
+        # Change the host url here
+        - 'traefik.http.routers.apps.rule=Host(`go-helloworld.hariangsaka.my.id`)'
+        - 'traefik.http.services.apps.loadbalancer.server.port=8080'
+        - 'traefik.http.routers.apps.entrypoints=websecure'
+        - 'traefik.http.routers.apps.tls=true'
+        - 'traefik.http.routers.apps.tls.certresolver=leresolver'
+    env_file:
+      - ./.env
+    networks:
+      - swarm_network
+
+networks:
+  swarm_network:
+    external: true
