@@ -1,3 +1,4 @@
 include:
   - /deploy/pipeline/apps/build.yml
   - /deploy/pipeline/apps/deploy.yml
+  - /deploy/pipeline/apps/alerting.yml
