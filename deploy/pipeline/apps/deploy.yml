@@ -14,15 +14,7 @@
     - source ./deploy/swarm/variable.txt
     - envsubst < ./deploy/swarm/docker-swarm-go-helloworld-updated.yml > ./deploy/swarm/docker-swarm-go-helloworld.yml
     - sshpass -p "$SSH_PASSWORD" rsync -avz -e 'ssh -o StrictHostKeyChecking=no' ./deploy/swarm/ "$USERNAME@$SERVER_ADDRESS:./golang"
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$SERVER_ADDRESS "\
-      source ~/golang/variable.txt && \
-      cd ~/golang && \
-      echo \"$DOCKER_HUB_PASS\" | docker login --username friski12 --password-stdin && \
-      if [ \"\$ENVIRONMENT\" = \"dev\" ]; then \
-        echo \"Inside development block\" && \
-        docker stack deploy -c docker-swarm-lb.yml go && \
-        docker stack deploy -c docker-swarm-go-helloworld.yml go --with-registry-auth; \
-      fi"
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$USERNAME@$SERVER_ADDRESS" "source ~/golang/variable.txt && cd ~/golang && echo \"$DOCKER_HUB_PASS\" | docker login --username friski12 --password-stdin && if [ \"\$ENVIRONMENT\" = \"dev\" ]; then echo \"Inside development block\" && docker stack deploy -c docker-swarm-lb.yml go && docker stack deploy -c docker-swarm-go-helloworld.yml go --with-registry-auth; fi"
 
 deploy:apps:dev:
   extends:
