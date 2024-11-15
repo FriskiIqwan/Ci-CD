@@ -4,7 +4,7 @@
   extends:
     - .dind_image
   script:
-    - docker login -u friski1 -p $DOCKER_HUB_PASS
+    - docker login -u friski12 -p $DOCKER_HUB_PASS
     - docker build -t friski12/go-helloworld:$TAGGING -f $CI_PROJECT_DIR/apps/go-app/Dockerfile /$CI_PROJECT_DIR/apps/go-app
     - docker push friski12/go-helloworld:$TAGGING
 
