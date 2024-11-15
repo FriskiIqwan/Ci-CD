@@ -8,13 +8,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// RootHandler returns a "Hello World" message
+// RootHandler returns a "Helo World" message
 func RootHandler(c echo.Context) error {
 	response := model.SuccessResponse[map[string]string]{
 		BaseAPIResponse: model.BaseAPIResponse{
 			Status:  http.StatusOK,
 			Success: true,
-			Message: "Hello World",
+			Message: "Helo World",
 		},
 		Data: map[string]string{},
 	}
